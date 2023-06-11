@@ -1,7 +1,4 @@
-import time
-
 import boto3
-from boto3 import dynamodb
 from boto3.dynamodb.conditions import Key, Attr
 
 
@@ -12,7 +9,11 @@ class Database:
 
     def get_table(self, table_name: str):
         response = self.client.list_tables()['TableNames']
-        print(response)
+
+    def get_things(self):
+        client = boto3.client('iot')
+        things = client.list_things()
+        return things["things"]
 
     def create_table(self, name):
         attribute_definitions = [{
@@ -49,22 +50,22 @@ class Database:
         table.put_item(Item=data)
         print(f"Items successfully inserted in {table} :: {data}")
 
-    def query(self, tableName, select):
-        #response = self.client.query(TableName=tableName, Select=select,KeyConditionExpression=Key('deviceid').eq('Dev-Thing-2').expression_format) #"partitionKeyName= :Dev-Thing-2"
+    def query(self, tableName, key):
         dynamodb = boto3.resource("dynamodb")
         table = dynamodb.Table(tableName)
-        filter_expression = 'timestamp between :time1 and :time2'
-        #expression_attribute_value = {'':,'time1':'2021-11-20 23:38', 'time2':'2021-11-20 23:39'}
-        #response = table.query(KeyConditionExpression=Key('deviceid').eq('Dev-Thing-2'), FilterExpression=Attr('timestamp').between('2021-11-25 19:59','2021-11-25 19:60'))
-        response = table.query(KeyConditionExpression=Key('deviceid').eq('Dev-Thing-2'))
-
+        response = table.query(KeyConditionExpression=Key('deviceid').eq(key))
         return response['Items']
 
-database = Database()
-database.get_table("bsm_raw_data")
-#test = database.create_table("test")
-#time.sleep(10)
-data = database.query(tableName="bsm_raw_data", select="ALL_ATTRIBUTES")
-#for d in data:
-#    print(d)
-#table.insert_data(test, "")
+    def query_between_dates(self, tableName, keyName, key, startdate, enddate, timeAttributeName):
+        dynamodb = boto3.resource("dynamodb")
+        table = dynamodb.Table(tableName)
+        response = table.query(KeyConditionExpression=Key(keyName).eq(key) & Key(timeAttributeName).between(startdate, enddate))
+        return response['Items']
+
+    def query_between_dates_for_attribute(self, tableName, keyName, key, startdate, enddate, timeAttributeName, attribute_name, attribute_value):
+        dynamodb = boto3.resource("dynamodb")
+        table = dynamodb.Table(tableName)
+        response = table.query(KeyConditionExpression=Key(keyName).eq(key) & Key(timeAttributeName).between(startdate, enddate)
+                               & Key(attribute_name).eq(attribute_value))
+        return response['Items']
+

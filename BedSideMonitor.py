@@ -25,13 +25,13 @@ import datetime
 import argparse
 import json
 import random
-import csv
 import time
 import sched
 
-from AWSHelper import AWSHelper
+from Constants import devices
 
 AllowedActions = ['both', 'publish', 'subscribe']
+
 
 # Custom MQTT message callback
 def customCallback(client, userdata, message):
@@ -68,7 +68,7 @@ def publishBedSideMonitorData(loopCount, deviceid):
             myAWSIoTMQTTClient.publish(topic, messageJson, 1)
 
         if loopCount % PublishFreqHeartRate == 0:
-            value = int(random.normalvariate(85,12))
+            value = int(random.normalvariate(85, 12))
             timestamp = str(datetime.datetime.now())
             message['timestamp'] = timestamp
             message['datatype'] = 'HeartRate'
@@ -80,9 +80,10 @@ def publishBedSideMonitorData(loopCount, deviceid):
             print('Published topic %s: %s\n' % (topic, messageJson))
 
     except publishTimeoutException:
-        print("Unstable connection detected. Wait for {} seconds. No data is pushed on IoT core from {} to {}.".format(DEFAULT_OPERATION_TIMEOUT_SEC, (datetime.datetime.now() - datetime.timedelta(seconds=DEFAULT_OPERATION_TIMEOUT_SEC)), datetime.datetime.now()))
-
-
+        print("Unstable connection detected. Wait for {} seconds. No data is pushed on IoT core from {} to {}.".format(
+            DEFAULT_OPERATION_TIMEOUT_SEC,
+            (datetime.datetime.now() - datetime.timedelta(seconds=DEFAULT_OPERATION_TIMEOUT_SEC)),
+            datetime.datetime.now()))
 
 
 # Read in command-line parameters
@@ -98,7 +99,7 @@ parser.add_argument("-id", "--clientId", action="store", dest="clientId", defaul
                     help="Targeted client id")
 parser.add_argument("-t", "--topic", action="store", dest="topic", default="sdk/test/Python", help="Targeted topic")
 parser.add_argument("-m", "--mode", action="store", dest="mode", default="both",
-                    help="Operation modes: %s"%str(AllowedActions))
+                    help="Operation modes: %s" % str(AllowedActions))
 parser.add_argument("-M", "--message", action="store", dest="message", default="Hello World!",
                     help="Message to publish")
 
@@ -166,20 +167,20 @@ time.sleep(2)
 loopCount = 0
 
 PublishFreqHeartRate = 1
-PublishFreqTemperature = 15
-PublishFreqOxygen = 10
+PublishFreqTemperature = 10
+PublishFreqOxygen = 15
 scheduler = sched.scheduler(time.time, time.sleep)
 
 now = time.time()
-awsHelper = AWSHelper()
-things = awsHelper.get_things()
+
+things = devices
 while True:
     try:
-        for thing in things:
-            if args.mode == 'both' or args.mode == 'publish':
-                scheduler.enterabs(now+loopCount, 1, publishBedSideMonitorData, (loopCount, thing.thingName))
-                scheduler.run()
-        loopCount += 1
+        if args.mode == 'both' or args.mode == 'publish':
+            for thing in things:
+                scheduler.enterabs(now + loopCount, 1, publishBedSideMonitorData, (loopCount, thing))
+            loopCount += 1
+        scheduler.run()
     except KeyboardInterrupt:
         break
 
