@@ -1,0 +1,13 @@
+Aggregating data for device BSM_G101
+Aggregating data for device BSM_G102
+Processing rules for device BSM_G101
+Alert for device_id BSM_G101 on rule Rule_101 starting at 2021-10-19 13:13 with breach type min
+Alert for device_id BSM_G101 on rule Rule_101 starting at 2021-10-19 13:16 with breach type min
+Alert for device_id BSM_G101 on rule Rule_101 starting at 2021-10-19 13:21 with breach type min
+Alert for device_id BSM_G101 on rule Rule_101 starting at 2021-10-19 13:34 with breach type min
+Alert for device_id BSM_G101 on rule Rule_101 starting at 2021-10-19 14:01 with breach type min
+Alert for device_id BSM_G101 on rule Rule_101 starting at 2021-10-19 14:06 with breach type min
+Processing rules for device BSM_G102
+Alert for device_id BSM_G102 on rule Rule_101 starting at 2021-10-19 13:16 with breach type min
+Alert for device_id BSM_G102 on rule Rule_101 starting at 2021-10-19 13:20 with breach type min
+Alert for device_id BSM_G102 on rule Rule_102 starting at 2021-10-19 13:21 with breach type min

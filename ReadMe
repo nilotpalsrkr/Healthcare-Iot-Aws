@@ -1,0 +1,15 @@
+
+The following installations are required before we run the program.
+pip install AWSIoTPythonSDK
+pip install simplejson
+pip install boto3
+
+1. For BSM Data upload - Run BedSideMonitor.py
+Run the program with following parameters:
+-e a2big6zbudpx7j-ats.iot.us-east-1.amazonaws.com -r certificates/AmazonRootCA1.pem -c certificates/5d97b5c5708315245c2c40cc304cc1a6caba461130d965334e39bbb460492448-certificate.pem.crt -k certificates/5d97b5c5708315245c2c40cc304cc1a6caba461130d965334e39bbb460492448-private.pem.key -id clientNil -t iot/bsm
+2. For Aggregation - Run main.py
+3. For Alerts - Run main.py
+4. Certificates of the deivices are placed in certificates directory for ease.
+5. Constant.py holds various constants like device details etc. Update this file when device-thing mapping is required.
+6. The screenshots are also placed in screenshots directory in the project. The screenshots also include 2 programs screenshots for alerting ang aggregation.
+7. C04P01_Nilotpal_Sarkar_Project1 are kept for both windows and mac system. For windows system, use .doc and .pages for mac based system.
